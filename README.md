@@ -10,6 +10,7 @@ This is simple python script, which scans Xiaomi BLE Temperature and Humidity se
     
     sudo pip3 install bluepy
     sudo pip3 install paho-mqtt
+    sudo pip3 install lywsd02
 
 2.Clone code:
 
@@ -41,10 +42,12 @@ Look for line which looks like this:
     average=3
     retain=1
     timeout=10
+    sensor_type = lywsd02
     
     [room2]
     device_mac=4C:65:A8:XX:XX:XX
     topic=sensors/room2
+    sensor_type = other
     
     etc...
 

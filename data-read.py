@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from lywsd02 import Lywsd02Client as Client
 from mitemp.mitemp_bt.mitemp_bt_poller import MiTempBtPoller
 from mitemp.mitemp_bt.mitemp_bt_poller import MI_TEMPERATURE, MI_HUMIDITY, MI_BATTERY
 from btlewrap.bluepy import BluepyBackend
@@ -10,6 +11,11 @@ import configparser
 import os
 import json
 import datetime
+import enum
+
+class Sensor(enum.Enum): 
+    lywsd02 = "lywsd02"
+    other = "other"
 
 workdir = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
@@ -26,13 +32,23 @@ messages = []
 for device in devices:
 
     mac = config[device].get("device_mac")
-    poller = MiTempBtPoller(mac, BluepyBackend, ble_timeout=config[device].getint("timeout", 10))
+    sensor_type = config[device].get("sensor_type").lower()
+    # Configure the client.
+    if sensor_type == Sensor.lywsd02.name:
+        client = Client(mac, data_request_timeout=config[device].getint("timeout", 10))
+    else:
+        poller = MiTempBtPoller(mac, BluepyBackend, ble_timeout=config[device].getint("timeout", 10))
 
-    try:
-
-        temperature = poller.parameter_value(MI_TEMPERATURE)
-        humidity = poller.parameter_value(MI_HUMIDITY)
-        battery = poller.parameter_value(MI_BATTERY)
+    try:        
+        # if sensor_type is Sensor.lywsd02:
+        if sensor_type == Sensor.lywsd02.name:
+            temperature = client.temperature
+            humidity = client.humidity
+            battery = client.battery
+        else:
+            temperature = poller.parameter_value(MI_TEMPERATURE)
+            humidity = poller.parameter_value(MI_HUMIDITY)
+            battery = poller.parameter_value(MI_BATTERY)            
 
         data = json.dumps({
             "temperature": temperature,
@@ -92,7 +108,6 @@ for device in devices:
         # print(traceback.print_exc())
     finally:
         messages.append({'topic': config[device].get("availability_topic"), 'payload': availability, 'retain': config[device].getboolean("retain", False)})
-
 
 # Init MQTT
 mqtt_config = configparser.ConfigParser()

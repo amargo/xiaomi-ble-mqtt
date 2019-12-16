@@ -4,6 +4,7 @@ topic = sensors/bedroom
 availability_topic = sensors/bedroom/availability
 average = 3
 timeout = 5
+sensor_type = lywsd02
 
 [kidsroom]
 device_mac = 
@@ -11,3 +12,4 @@ topic = sensors/kidsroom
 availability_topic = sensors/kidsroom/availability
 average = 5
 timeout = 5
+sensor_type = other
