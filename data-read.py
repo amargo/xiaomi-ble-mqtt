@@ -92,7 +92,7 @@ for device in devices:
             data = json.dumps({
                 "temperature": temperature,
                 "humidity": humidity,
-                "battery": battery,
+                "battery": int(battery),
                 "average": len(avg)
             })
 
