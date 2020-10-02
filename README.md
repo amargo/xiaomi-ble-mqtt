@@ -14,7 +14,7 @@ This is simple python script, which scans Xiaomi BLE Temperature and Humidity se
 
 2.Clone code:
 
-    git clone https://github.com/algirdasc/xiaomi-ble-mqtt.git
+    git clone https://github.com/amargo/xiaomi-ble-mqtt.git
     cd xiaomi-ble-mqtt
 
 3.Add crontab task. Task will be run every 5 minutes:
